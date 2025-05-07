@@ -1,9 +1,15 @@
 pipeline {
     agent any
+
+    tools {
+        jdk 'JDK17'  // 你需要在 Jenkins 全局工具中设置一个名为 JDK17 的 JDK
+    }
+
     environment {
-    JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-    PATH = "${JAVA_HOME}/bin:${env.PATH}"
-}
+        JAVA_HOME = "${tool 'JDK17'}"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+
     stages {
         stage('Clean') {
             steps {
@@ -40,19 +46,21 @@ pipeline {
                 sh 'mvn site'
             }
         }
-stage('Package') {
- steps {
- sh 'mvn package -DskipTests'
- }
- }
- }
- post {
- always {
- archiveArtifacts artifacts: '**/target/site/**/*.*', fingerprint: true
- archiveArtifacts artifacts: '**/target/**/*.jar', fingerprint: true
- archiveArtifacts artifacts: '**/target/**/*.war', fingerprint: true
- junit '**/target/surefire-reports/*.xml'
- }
- }
- }
+        stage('Package') {
+            steps {
+                sh 'mvn package -DskipTests'
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/target/site/**/*.*', fingerprint: true
+            archiveArtifacts artifacts: '**/target/**/*.jar', fingerprint: true
+            archiveArtifacts artifacts: '**/target/**/*.war', fingerprint: true
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }
+}
+
  //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
