@@ -143,6 +143,28 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
+
+  <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.3</version>
+        <configuration>
+          <failOnError>false</failOnError>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-javadoc</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+  </plugins>
+
+    
   </build>
 
   <profiles>
@@ -199,27 +221,6 @@
               <reuseForks>false</reuseForks>
             </configuration>
           </plugin>
-
-
-              <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-javadoc-plugin</artifactId>
-      <version>3.6.3</version>
-      <configuration>
-        <failOnError>false</failOnError>
-      </configuration>
-      <executions>
-        <execution>
-          <id>generate-javadoc</id>
-          <phase>verify</phase>
-          <goals>
-            <goal>javadoc</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
-
-
           
         </plugins>
 
