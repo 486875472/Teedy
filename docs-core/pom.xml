@@ -255,6 +255,26 @@
         </execution>
       </executions>
     </plugin>
+
+
+
+
+            <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>3.0.0</version> <!-- 或你项目使用的版本 -->
+      <configuration>
+        <includes>
+          <include>**/*Test.java</include>
+          <include>**/*Tests.java</include>
+        </includes>
+        <testFailureIgnore>false</testFailureIgnore> <!-- 默认即可 -->
+      </configuration>
+    </plugin>
+
+
+
+        
   </plugins>
   </build>
 
