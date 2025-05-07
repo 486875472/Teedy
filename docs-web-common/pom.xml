@@ -135,7 +135,8 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>3.6.3</version>
             <configuration>
-              <failOnError>false</failOnError> <!-- 可选：防止注释报错中断构建 -->
+              <failOnError>false</failOnError>
+              <additionalJOption>-Xdoclint:none</additionalJOption>
             </configuration>
             <executions>
               <execution>
