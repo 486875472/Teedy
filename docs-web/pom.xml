@@ -272,4 +272,28 @@
       </build>
     </profile>
   </profiles>
+
+
+
+  <build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-javadoc-plugin</artifactId>
+      <version>3.6.3</version>
+      <configuration>
+        <failOnError>false</failOnError> <!-- 可选：防止注释报错中断构建 -->
+      </configuration>
+      <executions>
+        <execution>
+          <id>generate-javadoc</id>
+          <phase>verify</phase>
+          <goals>
+            <goal>javadoc</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
 </project>
