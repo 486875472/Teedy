@@ -14,7 +14,7 @@ pipeline {
                 checkout scmGit(
                     branches: [[name: '*/master']],
                     extensions: [],
-                    userRemoteConfigs: [[url: 'https://github.com/xx/Teedy.git']]  // Your GitHub repository
+                    userRemoteConfigs: [[url: 'https://github.com/486875472/Teedy.git']]  // Your GitHub repository
                 )
                 sh 'mvn -B -DskipTests clean package'  // Maven build command
             }
