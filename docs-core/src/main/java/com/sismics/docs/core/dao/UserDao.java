@@ -394,4 +394,29 @@ public class UserDao {
         query.setParameter("toDate", toDate.toDate());
         return ((Number) query.getSingleResult()).longValue();
     }
+
+
+    public void approveUser(String username, String adminId) throws Exception {
+    EntityManager em = ThreadLocalContext.get().getEntityManager();
+
+    // Fetch the user by username (using the 'username' field)
+    System.out.println(username);
+
+    // Use JPQL to query the User entity by 'username'
+    User user = null;
+    try {
+        user = em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+                 .setParameter("username", username)
+                 .getSingleResult();  // This will throw an exception if no user is found
+    } catch (NoResultException e) {
+        throw new Exception("UserNotFound");
+    }
+
+    // Update the 'approved' status
+    user.setApproved(true);  // 'approved' field is mapped to 'USE_APPROVED_B' in the database
+    em.merge(user);
+
+    // Create an audit log for the approval action
+    AuditLogUtil.create(user, AuditLogType.UPDATE, adminId);
+}
 }

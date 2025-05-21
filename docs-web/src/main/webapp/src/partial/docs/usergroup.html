@@ -37,6 +37,13 @@
             {{ user.username }}
             <span class="text-muted" ng-if="userInfo.username == user.username">{{ 'usergroup.you' | translate }}</span>
           </td>
+          <!-- Adding the approval checkbox for the admin user -->
+          <td>
+            <label class="checkbox-inline">
+              <input type="checkbox" ng-model="user.approved" ng-change="updateApprovalStatus(user)">
+              {{ 'usergroup.approve_registration' | translate }}
+            </label>
+          </td>
         </tr>
         </tbody>
       </table>

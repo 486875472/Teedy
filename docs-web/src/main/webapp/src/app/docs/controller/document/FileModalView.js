@@ -87,6 +87,12 @@ angular.module('docs').controller('FileModalView', function ($uibModalInstance, 
     window.open('../api/file/' + $stateParams.fileId + '/data?size=content');
   };
 
+   $scope.openTranslatedContent = function (lang) {
+    console.log($stateParams.fileId);
+    window.open('../api/file/' + $stateParams.fileId + '/translate?lang=' + lang);
+  }
+
+
   /**
    * Print the file.
    */

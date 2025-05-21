@@ -34,6 +34,24 @@
   </div>
 </div>
 
+  <div class="form-inline" style="margin-top: 1em;">
+    <!-- Label for the translation language selection -->
+    <label for="langSelect">Translate to:</label>
+    
+    <select id="langSelect" class="form-control" ng-model="selectedLang">
+        <option value="en">English</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="zh-CN">Chinese</option>
+        <option value="es">Spanish</option>
+    </select>
+    
+    <!-- Button to trigger translation action -->
+    <button class="btn btn-primary" ng-click="openTranslatedContent(selectedLang)">
+        View Translated Content
+    </button>
+</div>
+
 <div class="text-center" style="position: relative;" ng-if="$stateParams.fileId">
   <!-- Standard preview -->
   <img ng-src="../api/file/{{ $stateParams.fileId }}/data?size=web"

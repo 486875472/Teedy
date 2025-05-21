@@ -29,6 +29,8 @@ import com.sismics.util.context.ThreadLocalContext;
 import com.sismics.util.mime.MimeType;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import com.sismics.docs.core.util.TranslateUtil;
+
 
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
@@ -807,6 +809,68 @@ public class FileResource extends BaseResource {
             if (!aclDao.checkPermission(file.getDocumentId(), PermType.READ, getTargetIdList(shareId))) {
                 throw new ForbiddenClientException();
             }
+        }
+    }
+
+    /**
+     * Translate a file.
+     *
+     * @api {get} /file/:id/translate Translate a file
+     * @apiName GetFileTranslate
+     * @apiGroup File
+     * @apiParam {String} id File ID
+     * @apiParam {String} share Share ID
+     * @apiParam {String} lang Target language
+     * @apiSuccess {String} translation Translated text
+     * @apiError (client) ForbiddenError Access denied or document not visible
+     * @apiError (client) NotFound File not found
+     * @apiError (server) ServiceUnavailable Error reading the file
+     * @apiPermission none
+     * @apiVersion 1.5.0
+     *
+     * @param fileId File ID
+     * @param shareId Share ID
+     * @param targetLang Target language
+     * @return Response
+     */
+    @GET
+    @Path("{id: [a-z0-9\\-]+}/translate")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response translate(
+            @PathParam("id") final String fileId,
+            @QueryParam("share") String shareId,
+            @QueryParam("lang") String targetLang) {
+
+        // Perform user authentication
+        authenticate();
+
+        // Debugging log to confirm function invocation
+        System.out.println("Attempting to translate file with ID: " + fileId + " to target language: " + targetLang);
+
+        // 1. Fetch the file based on the provided fileId and shareId
+        File file = findFile(fileId, shareId);
+
+        // 2. Extract the content from the file (only supports text type)
+        String content = file.getContent();
+        if (content == null || content.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT)
+                    .entity("No text content found in file.")
+                    .build();
+        }
+        System.out.println("File content: " + content);
+
+        // 3. Call the translation utility class to translate the content
+        try {
+            String translatedContent = TranslateUtil.translate(content, targetLang);
+            System.out.println("Translated content: " + translatedContent);
+            return Response.ok(translatedContent)
+                    .header(HttpHeaders.CONTENT_TYPE, "text/plain; charset=utf-8")
+                    .build();
+        } catch (Exception e) {
+            // Handle translation failure
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Translation failed: " + e.getMessage())
+                    .build();
         }
     }
 }

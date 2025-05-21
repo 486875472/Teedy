@@ -97,6 +97,36 @@
         </tr>
         </tbody>
       </table>
+      
+
+            <table class="table table-hover">
+          <thead>
+            <tr>
+              <th><input type="checkbox" ng-model="selectAllRequests" ng-click="toggleSelectAll()"></th>
+              <th>{{ 'document.username' | translate }}</th>
+              <th>{{ 'document.email' | translate }}</th>
+              <th>{{ 'document.registration_date' | translate }}</th>
+              <th>{{ 'document.status' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="request in userRequests">
+              <td><input type="checkbox" ng-model="request.selected" ng-change="updateSelection()"></td>
+              <td>{{ request.username }}</td>
+              <td>{{ request.email }}</td>
+              <td>{{ request.registration_date | date:'short' }}</td>
+              <td>
+                <span class="label" ng-class="{'label-success': request.approved, 'label-warning': !request.approved}">
+                  {{ request.approved ? 'Approved' : 'Pending' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
+
     </div>
   </div>
 </div>

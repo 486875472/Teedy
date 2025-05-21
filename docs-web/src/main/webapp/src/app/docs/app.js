@@ -417,7 +417,16 @@ angular.module('docs',
           controller: 'GroupProfile'
         }
       }
-    });
+    })
+    .state('settings.registration', {
+      url: '/registration',
+      views: {
+        'settings': {
+          templateUrl: 'partial/docs/settings.registration.html',
+          controller: 'SettingsRegistration'
+        }
+      }
+    })
 
   // Configuring Restangular
   RestangularProvider.setBaseUrl('../api');

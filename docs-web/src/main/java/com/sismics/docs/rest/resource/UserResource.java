@@ -67,7 +67,6 @@ public class UserResource extends BaseResource {
      * @apiError (server) PrivateKeyError Error while generating a private key
      * @apiError (client) AlreadyExistingUsername Login already used
      * @apiError (server) UnknownError Unknown server error
-     * @apiPermission admin
      * @apiVersion 1.5.0
      *
      * @param username User's username
@@ -81,10 +80,10 @@ public class UserResource extends BaseResource {
         @FormParam("password") String password,
         @FormParam("email") String email,
         @FormParam("storage_quota") String storageQuotaStr) {
-        if (!authenticate()) {
-            throw new ForbiddenClientException();
-        }
-        checkBaseFunction(BaseFunction.ADMIN);
+        // if (!authenticate()) {
+        //     throw new ForbiddenClientException();
+        // }
+        // checkBaseFunction(BaseFunction.ADMIN);
         
         // Validate the input data
         username = ValidationUtil.validateLength(username, "username", 3, 50);
@@ -102,11 +101,12 @@ public class UserResource extends BaseResource {
         user.setEmail(email);
         user.setStorageQuota(storageQuota);
         user.setOnboarding(true);
+        user.setApproved(false); // 用户创建时，设为待审批
 
         // Create the user
         UserDao userDao = new UserDao();
         try {
-            userDao.create(user, principal.getId());
+            userDao.create(user, "admin");
         } catch (Exception e) {
             if ("AlreadyExistingUsername".equals(e.getMessage())) {
                 throw new ClientException("AlreadyExistingUsername", "Login already used", e);
@@ -120,6 +120,10 @@ public class UserResource extends BaseResource {
                 .add("status", "ok");
         return Response.ok().entity(response.build()).build();
     }
+
+
+
+
 
     /**
      * Updates the current user informations.
@@ -304,6 +308,13 @@ public class UserResource extends BaseResource {
             user = AuthenticationUtil.authenticate(username, password);
         }
         if (user == null) {
+            throw new ForbiddenClientException();
+        }
+
+        System.out.println(username);
+        System.out.println(user.isUseApprovedB());
+
+        if (!username.equals("admin") && !user.isUseApprovedB()) {  // Assuming `isUseApprovedB` is a method or property that checks this field
             throw new ForbiddenClientException();
         }
 
@@ -1141,5 +1152,38 @@ public class UserResource extends BaseResource {
             ThreadLocalContext.get().addAsyncEvent(fileDeletedAsyncEvent);
         }
     }
+
+    @PUT
+    @Path("/approve")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)  // Ensure the API is set to consume JSON
+    public Response approveUser(@QueryParam("username") String userId) {
+
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        checkBaseFunction(BaseFunction.ADMIN);
+
+        // Validate user ID
+        if (Strings.isNullOrEmpty(userId)) {
+            throw new ClientException("ValidationError", "User ID is required");
+        }
+
+        // Approve the user
+        UserDao userDao = new UserDao();
+        try {
+            userDao.approveUser(userId, principal.getId());
+        } catch (Exception e) {
+            throw new ServerException("UnknownError", "Failed to approve user", e);
+        }
+
+        // Return success
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok")
+                .add("message", "User approved successfully");
+        return Response.ok().entity(response.build()).build();
+    }
+
+    
 
 }

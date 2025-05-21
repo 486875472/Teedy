@@ -95,6 +95,9 @@ public class User implements Loggable {
     @Column(name = "USE_DISABLEDATE_D")
     private Date disableDate;
 
+    @Column(name = "USE_APPROVED_B", nullable = true)
+    private boolean approved;
+
     public String getId() {
         return id;
     }
@@ -211,6 +214,16 @@ public class User implements Loggable {
     public User setOnboarding(boolean onboarding) {
         this.onboarding = onboarding;
         return this;
+    }
+
+    public User setApproved(boolean approved) {
+        this.approved = approved;  // 设置approved字段
+        return this;  // 返回当前对象，以便链式调用
+    }
+
+    public boolean isUseApprovedB() {
+        if (this.username=="admin") return true;
+        return this.approved;
     }
 
     @Override
